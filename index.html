@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tết 2026 - Bốc Thăm May Mắn</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --tet-red: #d32f2f;
+    --tet-gold: #ffeb3b;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, #b71c1c, #4a0000);
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+    color: var(--tet-gold);
+}
+
+/* Hoa rơi */
+.petal {
+    position: absolute;
+    top: -10px;
+    z-index: 1;
+    pointer-events: none;
+    animation: fall linear infinite;
+}
+@keyframes fall {
+    to { transform: translateY(100vh) rotate(360deg); }
+}
+
+.container {
+    position: relative;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    padding: 50px;
+    border: 5px solid var(--tet-gold);
+    border-radius: 40px;
+    text-align: center;
+    width: 600px;
+    box-shadow: 0 0 70px rgba(255, 235, 59, 0.2);
+}
+
+h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 4rem;
+    margin: 10px 0;
+}
+
+.status-box {
+    background: var(--tet-gold);
+    color: #b71c1c;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+}
+
+#number-display {
+    font-size: 14rem;
+    background: #fff;
+    color: var(--tet-red);
+    margin: 20px auto;
+    width: 400px;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    border: 10px solid #ffd700;
+}
+
+.btn-draw {
+    background: linear-gradient(to bottom, #ffeb3b, #fbc02d);
+    color: #b71c1c;
+    border: none;
+    padding: 25px 70px;
+    font-size: 2.2rem;
+    font-weight: bold;
+    border-radius: 60px;
+    cursor: pointer;
+    box-shadow: 0 8px 0 #f57f17;
+}
+.btn-draw:active { transform: translateY(4px); box-shadow: none; }
+.btn-draw:disabled { background: #ccc; color: #666; cursor: not-allowed; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div style="font-size: 1.5rem;">🎊 CHÚC MỪNG NĂM MỚI 2026 🎊</div>
+    <h1>Lucky Draw</h1>
+
+    <div class="status-box">
+        🧧 CÒN LẠI: <span id="count-left">80</span> SỐ
+    </div>
+
+    <div id="number-display">00</div>
+
+    <button class="btn-draw" id="drawBtn" onclick="draw()">QUAY SỐ</button>
+</div>
+
+<script>
+let numbers = Array.from({length: 80}, (_, i) => i + 1);
+
+function draw() {
+    if (numbers.length === 0) return alert("Đã hết số để bốc!");
+
+    const btn = document.getElementById('drawBtn');
+    btn.disabled = true;
+
+    let count = 0;
+    const interval = setInterval(() => {
+        const randomShow = Math.floor(Math.random() * 90 + 1);
+        document.getElementById('number-display').innerText =
+            randomShow.toString().padStart(2, '0');
+
+        count++;
+        if (count > 40) {
+            clearInterval(interval);
+            finalize();
+        }
+    }, 50);
+}
+
+function finalize() {
+    const randomIndex = Math.floor(Math.random() * numbers.length);
+    const winNum = numbers.splice(randomIndex, 1)[0];
+
+    document.getElementById('number-display').innerText =
+        winNum.toString().padStart(2, '0');
+
+    confetti({
+        particleCount: 250,
+        spread: 120,
+        origin: { y: 0.5 },
+        colors: ['#ffeb3b', '#d32f2f', '#ffffff']
+    });
+
+    document.getElementById('count-left').innerText = numbers.length;
+    document.getElementById('drawBtn').disabled = false;
+}
+
+// Hoa rơi
+function createPetal() {
+    const petal = document.createElement('div');
+    petal.className = 'petal';
+    petal.innerText = Math.random() > 0.5 ? '🌸' : '🌼';
+    petal.style.left = Math.random() * 100 + 'vw';
+    petal.style.animationDuration = Math.random() * 3 + 3 + 's';
+    petal.style.fontSize = Math.random() * 20 + 15 + 'px';
+    document.body.appendChild(petal);
+    setTimeout(() => petal.remove(), 6000);
+}
+setInterval(createPetal, 400);
+</script>
+
+</body>
+</html>
